@@ -1,0 +1,73 @@
+/** LIGHTBOX MARKUP **/
+
+.lightbox {
+  /* Default to hidden */
+  display: none;
+  align-items: center;	
+
+  /* Overlay entire screen */
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  
+  /* A bit of padding around image */
+  padding: 1em;
+
+  /* Translucent background */
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Unhide the lightbox when it's the target */
+.lightbox:target {
+  display: block;
+}
+
+.lightbox span {
+  /* Full width and height */
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  /* Size and position background image */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.imageType{
+	width:6vh; 
+	height: 6vh;
+	padding: 2vh;
+	vertical-align: middle;
+	horizontal-align: middle;
+	}
+.imageDepth{
+	width:5vh; 
+	height: 8.2vh;
+	vertical-align:middle;
+	horizontal-align:middle;
+	}
+
+p3 {
+	font-size: 3vh;
+	font-family: arial, sans-serif;
+	color: white;
+	text-align: center;
+	}
+
+
+p4 {
+	font-size: 5vh;
+	font-weight: bold;
+	font-family: arial, sans-serif;
+	color: white;
+	text-align: center;
+	}
+
+.KeyColumn {
+	column-count: 2
+	column-gap: 5vw
+	}
