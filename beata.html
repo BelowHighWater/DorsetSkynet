@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<title>Below High Water - Dorset satellites</title>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" href="css/leaflet.css" />
+	<link rel="stylesheet" href="css/leaflet-slider.css" />
+    <link rel="stylesheet" href="css/screen.css" />
+	<link rel="stylesheet" href="css/MarkerCluster.css" />
+	<link rel="stylesheet" href="css/lightbox.css" />
+	<link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+	<link rel="stylesheet" href="css/tabs.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="markers/BHW.png" />
+	<script src="js/leaflet.js"></script>
+	<script src="js/iconrotate.js"></script>
+	<script src="js/leaflet-slider.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	
+	
+ 
+</head>
+<style>
+.PicOverLay {
+		text-align:left;
+		font-size: 1.8em;
+		font-style: normal;
+		animation-name: StoryText;
+		animation-duration: 3s;
+		animation-fill-mode: forwards;
+		font-family:'Arial',sans-serif;
+		position: relative;
+		padding-left: 15%;
+		padding-right: 15%;
+		top: 20%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		}
+		
+@keyframes StoryText {
+  0%   {background-color:#00000000; color:#FFFFFF00; text-shadow: 0px 0px 5px #00000000;}
+  100%   {background-color:#00000050; color:#FFFFFFFF; text-shadow: 0px 0px 5px #000000FF;}
+</style> 
+<body>
+
+<div id='map'></div>
+<div id="datelabel" style="z-index:5;"></div>
+
+<script>
+var FOCUSN = 50.55
+var FOCUSE = -2.55
+var SW = L.latLng(FOCUSN, FOCUSE)
+var NE = L.latLng(FOCUSN, FOCUSE)
+var SWmax = L.latLng(FOCUSN, FOCUSE)
+var NEmax = L.latLng(FOCUSN, FOCUSE)
+DorsetBounds = L.latLngBounds(NE,SW);
+maxPanning = L.latLngBounds(NEmax,SWmax);
+
+//Base Maps from Open Street Map
+	var map = L.map('map',{
+	maxBounds: maxPanning,
+	boundsViscosity: 1.0,
+	})
+	Land = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+		maxZoom: 13,
+		minZoom: 13,
+		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ',			
+		id: 'mapbox/streets-v11',
+	}).addTo(map);
+	
+	
+map.fitBounds([DorsetBounds]);
+var DTG =''
+var SentinelLayer = ''
+var lastWeek =[]
+var today = new Date();
+lastWeek[0] = today
+for (let step = 28; step > 0; step--) {
+  // Runs 14 times, with values of step 1 through 13.
+tomorrow = new Date(today);
+tomorrow.setDate(tomorrow.getDate()-step*2);
+lastWeek[step] = tomorrow
+}
+
+
+slider = L.control.slider(function(value) {
+			//map.removeLayer(SentinelLayer),
+    		DTG = lastWeek[value].getFullYear() + '-' + (lastWeek[value].getMonth()+1) + '-' + lastWeek[value].getDate(),
+			SentinelLayer = L.tileLayer.wms('https://services.sentinel-hub.com/ogc/wms/84473f6a-c855-4786-9295-6e89414ccb6d?REQUEST=GetMap', 
+			{
+			layers: 'TRUE-COLOR-S2L2A',
+			tiled: 'false',
+			format: 'image/jpeg',
+			maxZoom: 13,
+			minZoom: 13,
+			time: DTG,
+			}).addTo(map);
+			
+			console.log(DTG);			
+			}, {
+    		max: 28,
+			min: 0,
+			showValue: false,
+    		value: 0,
+    		step: 1,
+    		size: '450px',
+    		orientation:'horizontal',
+			increment: 'true',
+			collapsed: false,
+    		id: 'slider'
+			}).addTo(map);
+
+
+	
+
+</script>
+</body>
+</html>
