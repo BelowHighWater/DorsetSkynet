@@ -41,12 +41,12 @@
 <div id='map'></div>
 
 <script>
-var zoomL = 13
-var FOCUSN = 50.55
-var FOCUSE = -2.43
+var zoomL = 14
+var FOCUSN = 50.61
+var FOCUSE = -2.25
 var FOCUSdN = FOCUSN - 0.01
 var FOCUSdE = FOCUSE - 0.01
-var DTIME = '2022-05-29'
+var DTIME = '2022-02-25'
 var SW = L.latLng(FOCUSN, FOCUSE)
 var NE = L.latLng(FOCUSN, FOCUSE)
 var SWmax = L.latLng(FOCUSN, FOCUSE)
@@ -68,14 +68,15 @@ maxPanning = L.latLngBounds(NEmax,SWmax);
 
 SentinelLayer = L.tileLayer.wms('https://services.sentinel-hub.com/ogc/wms/84473f6a-c855-4786-9295-6e89414ccb6d?REQUEST=GetMap', 
 			{
-			layers: 'NATURAL-COLOR',
+			//layers: 'NATURAL-COLOR',
+			layers: 'TRUE-COLOR-S2L2A',
 			tiled: 'true',
 			format: 'image/jpeg',
 			maxZoom: zoomL,
 			minZoom: zoomL,
 			time: DTIME,
 			info_format: 'text/plain',
-			QUERY_LAYERS: 'NATURAL-COLOR'
+			//QUERY_LAYERS: 'TRUE-COLOR-S2L2A'
 			}).addTo(map)
 
 	
@@ -83,7 +84,7 @@ map.fitBounds([DorsetBounds]);
 
 
 //var ImgText =''
-var URL = 'https://services.sentinel-hub.com/ogc/wms/84473f6a-c855-4786-9295-6e89414ccb6d?REQUEST=GetFeatureInfo&TIME='+DTIME+'&BBOX='+FOCUSN+','+FOCUSE+','+FOCUSdN+','+FOCUSdE+'&I=1&J=2&WIDTH=2&HEIGHT=5&INFO_FORMAT=application/json&QUERY_LAYERS=NATURAL-COLOR&CRS=EPSG:4326'
+var URL = 'https://services.sentinel-hub.com/ogc/wms/84473f6a-c855-4786-9295-6e89414ccb6d?REQUEST=GetFeatureInfo&TIME='+DTIME+'&BBOX='+FOCUSN+','+FOCUSE+','+FOCUSdN+','+FOCUSdE+'&I=1&J=2&WIDTH=2&HEIGHT=5&INFO_FORMAT=application/json&QUERY_LAYERS=TRUE-COLOR-S2L2A&CRS=EPSG:4326'
 
 var OutPut
 
@@ -113,7 +114,6 @@ function DateDisplay(imgdate){
 	L.control.textbox = function(opts) { return new L.Control.textbox(opts);}
 	L.control.textbox({ position: 'topright' }).addTo(map);
 	}
-
 
 </script>
 </body>
