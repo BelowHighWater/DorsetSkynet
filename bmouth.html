@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+	<title>Below High Water - Dorset satellites</title>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link rel="stylesheet" href="css/leaflet.css" />
+	<link rel="stylesheet" href="css/leaflet-slider.css" />
+    <link rel="stylesheet" href="css/screen.css" />
+	<link rel="stylesheet" href="css/MarkerCluster.css" />
+	<link rel="stylesheet" href="css/lightbox.css" />
+	<link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+	<link rel="stylesheet" href="css/tabs.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="markers/BHW.png" />
+	<script src="js/leaflet.js"></script>
+	<script src="js/iconrotate.js"></script>
+	<script src="js/leaflet-slider.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	
+	
+ 
+</head>
+<style>
+.DateDis {
+		font-family:'Trebuchet', sans-serif;
+		font-size:5em;
+		color: white;
+		text-shadow: 2px 2px 10px #000055;
+		font-weight:bold;
+		overflow:hidden;
+		padding:1px 1px;
+		word-break:normal;
+		text-align:center;
+		vertical-align:middle;
+		}
+		
+</style> 
+<body>
+
+<div id='map'></div>
+
+<script>
+var zoomL = 13
+var FOCUSN = 50.69
+var FOCUSE = -1.88
+var FOCUSdN = FOCUSN - 0.01
+var FOCUSdE = FOCUSE - 0.01
+var DTIME = ''//'2021-02-11'
+var SW = L.latLng(FOCUSN, FOCUSE)
+var NE = L.latLng(FOCUSN, FOCUSE)
+var SWmax = L.latLng(FOCUSN, FOCUSE)
+var NEmax = L.latLng(FOCUSN, FOCUSE)
+DorsetBounds = L.latLngBounds(NE,SW);
+maxPanning = L.latLngBounds(NEmax,SWmax);
+
+//Base Maps from Open Street Map
+	var map = L.map('map',{
+	maxBounds: maxPanning,
+	boundsViscosity: 1.0,
+	})
+	Land = L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+		maxZoom: zoomL,
+		minZoom: zoomL,
+		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ',			
+		id: 'mapbox/streets-v11',
+	}).addTo(map);
+
+SentinelLayer = L.tileLayer.wms('https://services.sentinel-hub.com/ogc/wms/84473f6a-c855-4786-9295-6e89414ccb6d?REQUEST=GetMap', 
+			{
+			layers: 'TRUE-COLOR-S2L2A',
+			tiled: 'true',
+			format: 'image/jpeg',
+			maxZoom: zoomL,
+			minZoom: zoomL,
+			time: DTIME,
+			}).addTo(map)
+
+	
+map.fitBounds([DorsetBounds]);
+
+
+var URL = 'https://services.sentinel-hub.com/ogc/wms/84473f6a-c855-4786-9295-6e89414ccb6d?REQUEST=GetFeatureInfo&TIME='+DTIME+'&BBOX='+FOCUSN+','+FOCUSE+','+FOCUSdN+','+FOCUSdE+'&I=1&J=2&WIDTH=2&HEIGHT=5&INFO_FORMAT=application/json&QUERY_LAYERS=TRUE-COLOR-S2L2A&CRS=EPSG:4326'
+
+var OutPut
+
+fetch(URL)
+    // Handle success
+    .then(response => response.json())  // convert to json
+    .then(json => OutPut = json.features[0].properties.date)
+	.then (() =>console.log(OutPut))//print data to console
+	.then (() => DateDisplay(OutPut))
+    .catch(err => console.log('Request Failed', err)); // Catch errors
+
+function DateDisplay(imgdate){
+
+		L.Control.textbox = L.Control.extend({
+		onAdd: function(map) {
+			
+		var text = L.DomUtil.create('div');
+		text.id = "info_text";
+		text.innerHTML = '<h1 class="DateDis">'+imgdate+'</h1>'
+		return text;
+		},
+
+		onRemove: function(map) {
+			// Nothing to do here
+		}
+	});
+	L.control.textbox = function(opts) { return new L.Control.textbox(opts);}
+	L.control.textbox({ position: 'topright' }).addTo(map);
+	}
+
+
+</script>
+</body>
+</html>
